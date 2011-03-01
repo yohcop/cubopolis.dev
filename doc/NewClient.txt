@@ -1,0 +1,182 @@
+
+========
+ Basics
+========
+
+- The world is divided in chunks with coordinates chunkY:chunkX
+- Each chunk is divided in cells with coordinates x:y:x
+  - z is altitude.
+  - all x, y and z are in [0-16). Meaning max altitude is 15 for now.
+    16 is the "chunk size" also defined on the server side.
+  - z == 0 means the floor, so it is possible to draw roads, and paths....
+- There are 3 types of zones:
+  - Live: what is lighten up, and updated live with actions from other players.
+    You can see them, see what they do, and they can hear you.
+    Although in theory this could be as big as needed, for now I would rather
+    keep it small (2x2 chunks) to see how the server react. For every message
+    it has to check all the chunks to decide to whom send the updates.
+  - The Shadows: The portion of the world that you have visited, but is not
+    updated live In the first version, it is painted faded. you don't see other
+    players in the shadows, and don't receive their updates.
+  - The Darkness: You don't see anything there. you haven't visited this part
+    of the world yet.
+- The player is 2 blocks tall, and can jump 1 block high only.
+
+============
+ Dev Server
+============
+
+You can connect your clients to a dev server located at cube.leppoc.net:10234.
+This server runs the same code as cube.leppoc.net, but accepts incomming connection from
+"localhost" and "192.168.X.X:X" ip addresses. Also the database is non persisted.
+
+================
+ Protocol & API
+================
+
+// TODO. Not needed if using the JS Library
+
+==================================
+ How to implement a new JS client
+==================================
+(Using the provided JS Library)
+
+It should be easy to re-use the JS that is already implemented, talks to the
+server, takes care of caching the world pieces, send updates to the renderer,
+etc.
+
+2 things need to be implemented to use the basic js already written:
+  - a renderer class.
+  - a flag class.
+
+
+Renderer
+--------
+The renderer should not store any world state, as it should have access
+to a World object that contains this information, and a Player object as well.
+It should only worry about rendering of the world, players and console
+information.
+
+The renderer must have the following methods:
+- setDirty()
+  Says that something has changed in the world, and it should be repainted. If the renderer continuously updates the world it can be ignored.
+- reloadVisibleParts()
+  The renderer should figure out what are the chunks around the player, and call
+    this.comm.reloadChunk(chunkY, chunkX)
+  for each of them. At the end, the renderer must also update the list of
+  chunks Live with :
+    this.comm.listenChunks(toListen);
+  The renderer should also use this.world.pendingChunk(chunkY, chunkX) which
+  returns true if the world is waiting for this chunk and
+  this.world.isLiveChunk(chunkY, chunkX) to avoid requesting something we
+  already know.
+- refreshCell(chunkY, chunkX, z, y, x)
+  Says that the given cell was updated and should be repainted.
+- refreshChunk(chunkY, chunkX)
+  Says that the given chunk was updated and should be repainted.
+- consoleIsDirty()
+  Similar to setDirty(), but says that the console content was updated and
+  should be repainted.
+
+
+Flags
+-----
+
+Flags is not actually needed really, but it is super useful, so you probably
+want one. Plus the console already provides some facilities to let the player
+change some properties of the game (for example, draw shadows or not, for
+slower computers, etc.) Ultimately this will be saved on the server for each
+player.
+
+The Flags class must satisfy the following interface:
+- messageTimeoutInSec()
+  For how long the console should show messages from the system, or chat
+  messages from other users, etc.
+- set(key, value)
+  Set the configuration value for the given key.
+
+
+That's it.
+
+The implementation usually can call functions and use members that don't start with "_".
+- console.type(event)
+  When a key is hit.
+- player.selectAction(a)
+  a is in [0,9] 0 being "destroy" action, [1-9] are cube building actions.
+- player.moveZ()
+  after a cube is added or destroyed, calling this function makes sure that the
+  player position is updated to be on top of the cubes.
+- player.isOn(chunkY, chunkX, z, y, x)
+  says if the player is on top of the given cell
+- player.move(dx, dy)
+  move the player of dx, dy cells. dx and dy should be max -1, 0 or 1.
+- player.act(dx, dy)
+  Act (build a cube, or destroy one) on the cell around the player's position.
+  dx and dy should be max -1, 0 or 1.
+- world.getCell(chunkY, chunkX, z, y, x)
+  Returns the cell value. e.g. "1" for a red cube. "0" or "" for empty.
+- world.isEmpty(chunkY, chunkX, z, y, x)
+  Checks if the cell is empty. Essentially checks for a value of "0" or "".
+- world.getPlayers(chunkY, chunkX, z, y, x)
+  Get a list of players at the given cell.
+- world.hasChunk(chunkY, chunkX)
+  Says if the chunk is known (i.e. NOT in The Darkness)
+- world.isLiveChunk(chunkY, chunkX)
+  Says if the chunk is live (i.e. NOT in The Darkness and NOT in The Shadows)
+- world.pendingChunk(chunkY, chunkX)
+  Says if the world is waiting for the given chunk for the server.
+
+
+
+When the player takes an action, the client will call player.act, for example.
+The player class will take care of sending that to the server through the
+communication layer. The server will respond with an action, send the update to
+the listener, which in turn tells the renderer to update the drawing:
+
+The following serie of event occurs when the user changes a cube for example
+1. client receives key strokes
+2. client calls player.act
+3. player.act checks what to do, and call Comm.setCell
+5. Comm.setCell sends update to the server
+4. server writes to database
+5. server sends updates to all concerned clients
+6. client receives update in Comm
+7. Comm notifies the CommListener
+8. CommListener updates the World, and ping the renderer via renderer.setDirty()
+9. renderer repaints the world.
+
+This way, the state stays consistent and the server is always the reference
+point.  One drawback may be the latency between an action, and seeing it
+reflected on the screen. So far it hasn't been a problem with few clients:
+websockets are pretty fast.
+
+
+Sample main
+-----------
+
+function main() {
+  // Generic stuff.
+  var chunkSize = 16;  // Must be 16 to match the server.
+  var player = new Player();
+  var world = new World(chunkSize);
+  var commListener = new CommListener();
+  var comm = new Websockets();
+  var console = new Console();
+
+  // Specific renderer implementation
+  var renderer = new Renderer();
+  var flags = new Flags();
+
+  // Setup phase. Give everyone what they need.
+  // Generic stuff
+  player.setup(comm, world, renderer);
+  commListener.setup(world, renderer, console);
+  // Only the dev server, at cube.leppoc.net:10234 accepts external connections.
+  comm.setup(commListener, "ws://cube.leppoc.net:10234", "http://cube.leppoc.net:10234");
+  console.setup(flags, renderer, comm);
+
+  // Renderer implementation stuff
+  flags.setup(renderer);
+  renderer.setup(chunkSize, world, comm, flags, console, player, ui);
+  setInterval(function() {renderer.repaint();}, 40);
+};
