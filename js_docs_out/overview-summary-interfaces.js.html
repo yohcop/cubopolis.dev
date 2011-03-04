@@ -1,0 +1,407 @@
+<!doctype html public "-//W3C//DTD HTML 4.0 Frameset//EN""http://www.w3.org/TR/REC-html40/frameset.dtd">
+<html>
+<head>
+<title>
+ Overview
+</title>
+<link rel ="stylesheet" type="text/css" href="stylesheet.css" title="Style">
+<script>
+function asd() {
+	
+		parent.document.title="interfaces.js Overview";
+	
+}
+</script>
+</head>
+<body bgcolor="white" onload="asd();">
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> 	<font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top">
+<em>
+<b></b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<center>
+	
+	   <h2>interfaces.js</h2>
+	
+</center>
+
+	
+
+
+<h4>Summary</h4>
+<p>
+	
+		No overview generated for 'interfaces.js'<BR/><BR/>
+	
+</p>
+
+<hr>
+
+
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+    <tr bgcolor="#CCCCFF" class="TableHeadingColor">
+    <td colspan=2><font size="+2">
+    
+        <b>Class Summary</b>
+    
+    </font></td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="ConsoleListener.html">ConsoleListener</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="Flags.html">Flags</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="NetListener.html">NetListener</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="Renderer.html">Renderer</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    <tr bgcolor="white" class="TableRowColor">
+    <td width="15%"><b><a href="ServerComm.html">ServerComm</a></b></td>
+    <td>&nbsp;</td>
+    </tr>
+    
+    </table>
+    <hr/> 
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<!-- ========== END METHOD SUMMARY =========== -->
+
+
+        <pre class="sourceview"><span class="comment">// This file contains interface definitions.</span>
+<span class="comment">// They are meant only to be used by the compiler, but are otherwise useless.</span>
+<span class="comment">// No need to include it when deploing code.</span>
+
+<span class="comment">/**
+ * Network interface.
+ * Classes implementing this interface handle communication with the cubopolis
+ * servers.
+ *
+ * <span class="attrib">@interface</span>
+ */</span>
+<span class="reserved">function</span> ServerComm() {};
+
+<span class="comment">/**
+ * Get the entire chunk cells from the server.
+ * This should be called whenever a non live chunk becomes live, because
+ * updates on the server are not pushed to the client when a chunk is not
+ * live.
+ * For a chunk to become live, the function listenChunks must be called.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ */</span>
+ServerComm.<span class="reserved">prototype</span>.reloadChunk = <span class="reserved">function</span>(chunkY, chunkX) {};
+
+<span class="comment">/**
+ * Instruct the server that this client wants to receive updates about the
+ * given chunks. Calling listenChunks with a new list of chunks to listen
+ * overrides all previous calls to this function. The server will only send
+ * updates for the chunks passed during the last call to listenChunks.
+ * <span class="attrib">@param</span> chunks A list of [y, x] chunk coordinates.
+ *        e.g. [[0,0], [1,0]] will listen for the chunk 0,0 and 1,0
+ */</span>
+ServerComm.<span class="reserved">prototype</span>.listenChunks = <span class="reserved">function</span>(chunks) {};
+
+<span class="comment">/**
+ * Save the value for a given cell on the server.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ * <span class="attrib">@param</span> {number} cellZ cell Z coordinate.
+ * <span class="attrib">@param</span> {number} cellY cell Y coordinate.
+ * <span class="attrib">@param</span> {number} cellX cell X coordinate.
+ * <span class="attrib">@param</span> {string} value new cell value.
+ */</span>
+ServerComm.<span class="reserved">prototype</span>.setCell = <span class="reserved">function</span>(chunkY, chunkX, cellZ, cellY, cellX, value) {};
+
+<span class="comment">/**
+ * Send the given text message to other players around the player.
+ * <span class="attrib">@param</span> {string} text the text message.
+ */</span>
+ServerComm.<span class="reserved">prototype</span>.sendText = <span class="reserved">function</span>(text) {};
+
+<span class="comment">/**
+ * Moves the player to the given cell. This should be called only by the {Player} class
+ * if you are using it.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ * <span class="attrib">@param</span> {number} cellZ cell Z coordinate.
+ * <span class="attrib">@param</span> {number} cellY cell Y coordinate.
+ * <span class="attrib">@param</span> {number} cellX cell X coordinate.
+ */</span>
+ServerComm.<span class="reserved">prototype</span>.movePlayer = <span class="reserved">function</span>(chunkY, chunkX, cellZ, cellY, cellX) {};
+
+<span class="comment">// ============================================================================</span>
+
+<span class="comment">/**
+ * Interface listening for events comming from a Websockets object.
+ * This library provides a default implementation of this interface in
+ * CommListener.
+ *
+ * <span class="attrib">@interface</span>
+ */</span>
+<span class="reserved">function</span> NetListener() {};
+
+<span class="comment">/**
+ * The connection to the cubopolis server was established.
+ */</span>
+NetListener.<span class="reserved">prototype</span>.nowOnline = <span class="reserved">function</span>() {};
+
+<span class="comment">/**
+ * The connection to the cubopolis server was closed.
+ * The object calling this function should make sure to try to connect again.
+ */</span>
+NetListener.<span class="reserved">prototype</span>.nowOffline = <span class="reserved">function</span>() {};
+
+<span class="comment">/**
+ * The server is now delivering updates for the given chunks.
+ * <span class="attrib">@param</span> {Array} chunks a list of chunks. e.g. [[0,0], [1,0]]. Coordinates are
+ *        [chunkY, chunkX]
+ */</span>
+NetListener.<span class="reserved">prototype</span>.listeningTo = <span class="reserved">function</span>(chunks) {};
+
+<span class="comment">/**
+ * Updated information about the given chunk was received.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ * <span class="attrib">@param</span> {Array} data a multidimentional array, where the value of cell at
+ * x,y,z is stored in data[z][y][x].
+ */</span>
+NetListener.<span class="reserved">prototype</span>.setChunk = <span class="reserved">function</span>(chunkY, chunkX, data) {};
+
+<span class="comment">/**
+ * Update the value for the given cell.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ * <span class="attrib">@param</span> {number} cellZ cell Z coordinate.
+ * <span class="attrib">@param</span> {number} cellY cell Y coordinate.
+ * <span class="attrib">@param</span> {number} cellX cell X coordinate.
+ * <span class="attrib">@param</span> {string} value the new cell value.
+ */</span>
+NetListener.<span class="reserved">prototype</span>.setCell = <span class="reserved">function</span>(chunkY, chunkX, cellZ, cellY, cellX, value) {};
+
+<span class="comment">/**
+ * The given message was received. Usually a chat message, but can really be anything.
+ * <span class="attrib">@param</span> {string} message the message.
+ */</span>
+NetListener.<span class="reserved">prototype</span>.receiveMessage = <span class="reserved">function</span>(message) {};
+
+<span class="comment">/**
+ * The player with the given playerId moved to the given cell.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ * <span class="attrib">@param</span> {number} cellZ cell Z coordinate.
+ * <span class="attrib">@param</span> {number} cellY cell Y coordinate.
+ * <span class="attrib">@param</span> {number} cellX cell X coordinate.
+ * <span class="attrib">@param</span> {number} playerId Id for the player who moved.
+ */</span>
+NetListener.<span class="reserved">prototype</span>.playerMoved = <span class="reserved">function</span>(chunkY, chunkX, cellZ, cellY, cellX, playerId) {};
+
+<span class="comment">/**
+ * The given player is leaving the game.
+ * <span class="attrib">@param</span> {number} playerId Id for the player who left.
+ */</span>
+NetListener.<span class="reserved">prototype</span>.playerLeaving = <span class="reserved">function</span>(playerId) {};
+
+<span class="comment">// ============================================================================</span>
+
+<span class="comment">/**
+ * A world Renderer.
+ * This interface defines functions that a client renderer should be implementing
+ * when used witht the provided {CommListener} of this library
+ *
+ * <span class="attrib">@interface</span>
+ */</span>
+<span class="reserved">function</span> Renderer() {};
+
+<span class="comment">/**
+ * Tells the renderer to repaint the whole screen. This happens when the client
+ * goes offline.
+ * TODO: this function is at least missnamed. The library should not decide
+ * when the renderer have to repaint.
+ */</span>
+Renderer.<span class="reserved">prototype</span>.setDirty = <span class="reserved">function</span>() {};
+
+<span class="comment">/**
+ * Tells the renderer to determine what chunks are visible to the player (or
+ * close).  The renderer should then call reloadChunk on each of the visible
+ * chunks, followed by a call to listenChunks.
+ * This function is basically called when the client is online either for the
+ * first time, or after a deconnection.
+ * TODO: this function is missnamed.
+ */</span>
+Renderer.<span class="reserved">prototype</span>.reloadVisibleParts = <span class="reserved">function</span>() {};
+
+<span class="comment">/**
+ * Tells the renderer that something changed about the given cell.
+ * It can be for different reasons: a new block, a block changed type, a block
+ * was destroyed, a player on the given cell moved.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ * <span class="attrib">@param</span> {number} z cell Z coordinate.
+ * <span class="attrib">@param</span> {number} y cell Y coordinate.
+ * <span class="attrib">@param</span> {number} x cell X coordinate.
+ */</span>
+Renderer.<span class="reserved">prototype</span>.refreshCell = <span class="reserved">function</span>(chunkY, chunkX, z, y, x) {};
+
+<span class="comment">/**
+ * Similar to refreshCell, but for a chunk.
+ * This tells the renderer that something significant changed in this chunk
+ * (e.g. it was reloaded) and the renderer should repaint this chunk.
+ * This is only called when multiple cells have changed in the given chunk.
+ * <span class="attrib">@param</span> {number} chunkY chunk Y coordinate.
+ * <span class="attrib">@param</span> {number} chunkX chunk X coordinate.
+ */</span>
+Renderer.<span class="reserved">prototype</span>.refreshChunk = <span class="reserved">function</span>(chunkY, chunkX) {};
+
+<span class="comment">// ============================================================================</span>
+
+<span class="comment">/**
+ * <span class="attrib">@constructor</span>
+ */</span>
+<span class="reserved">function</span> Flags() {};
+
+<span class="comment">/**
+ * Return a number of seconds for which a message should be on the console.
+ * <span class="attrib">@return</span> {number} in seconds.
+ */</span>
+Flags.<span class="reserved">prototype</span>.messageTimeoutInSec = <span class="reserved">function</span>() {};
+
+<span class="comment">/**
+ * Sets the given flag to the given value.
+ * <span class="attrib">@param</span> {string} key flag name.
+ * <span class="attrib">@param</span> {string} value new flag value.
+ */</span>
+Flags.<span class="reserved">prototype</span>.set = <span class="reserved">function</span>(key, value) {};
+
+<span class="comment">// ============================================================================</span>
+
+<span class="comment">/**
+ * <span class="attrib">@constructor</span>
+ */</span>
+<span class="reserved">function</span> ConsoleListener() {};
+
+<span class="comment">/**
+ * Says that the console should be repainted.
+ */</span>
+ConsoleListener.<span class="reserved">prototype</span>.consoleIsDirty = <span class="reserved">function</span>() {};
+</pre>
+	<hr>
+
+
+
+<!-- ========== START OF NAVBAR ========== -->
+<a name="navbar_top"><!-- --></a>
+<table border="0" width="100%" cellpadding="1" cellspacing="0">
+<tr>
+<td colspan=2 bgcolor="#EEEEFF" class="NavBarCell1">
+<a name="navbar_top_firstrow"><!-- --></a>
+<table border="0" cellpadding="0" cellspacing="3">
+  <tr align="center" valign="top">
+  
+  
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-summary.html"><font class="NavBarFont1"><b>Overview</b></font></a>&nbsp;</td>
+  <td bgcolor="#FFFFFF" class="NavBarCell1Rev">	&nbsp;<font class="NavBarFont1Rev"><b>File</b></font>&nbsp;</td>
+  
+
+  <td bgcolor="#FFFFFF" class="NavBarCell1"> <font class="NavBarFont1">Class</font>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="overview-tree.html"><font class="NavBarFont1"><b>Tree</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="index-all.html"--><font class="NavBarFont1"><b>Index</b></font></a>&nbsp;</td>
+  <td bgcolor="#EEEEFF" class="NavBarCell1">    <a href="help-doc.html"><font class="NavBarFont1"><b>Help</b></font></a>&nbsp;</td>
+  </tr>
+</table>
+</td>
+<td bgcolor="#EEEEFF" align="right" valign="top"><em>
+<b></b></em>
+</td>
+</tr>
+
+<tr>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+&nbsp;PREV&nbsp;
+&nbsp;NEXT</font></td>
+<td bgcolor="white" class="NavBarCell2"><font size="-2">
+  <a href="index.html" target="_top"><b>FRAMES</b></a>  &nbsp;
+&nbsp;<a href="overview-summary.html" target="_top"><b>NO FRAMES</b></a>
+&nbsp;&nbsp;
+<script>
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="allclasses-noframe.html" TARGET=""><B>All Classes</B></A>');
+  }
+  //-->
+</script>
+<noscript>
+<a href="allclasses-noframe.html" target=""><b>All Classes</b></a>
+</noscript>
+</font></td>
+</tr>
+</table>
+<!-- =========== END OF NAVBAR =========== -->
+
+<hr>
+<font size="-1">
+
+</font>
+<div class="jsdoc_ctime">Documentation generated by <a href="http://jsdoc.sourceforge.net/" target="_parent">JSDoc</a> on Fri Mar  4 00:16:40 2011</div>
+</body>
+</html>
