@@ -1,13 +1,20 @@
 
-// The main player. Holds the position, selected action, etc.
 
+/**
+ * The main player. Holds the position, selected action, etc.
+ *
+ * @constructor
+ */
 function Player() {
   this.position = [0, 0, 0, 0, 0];
   this.action = this._build;
   this.actionOpt = "1";
 
+  /** @private */
   this._world = null;
+  /** @private */
   this._comm = null;
+  /** @private */
   this._renderer = null;
 }
 
@@ -94,6 +101,7 @@ Player.prototype.selectAction = function(id) {
   }
 };
 
+/** @private */
 Player.prototype._build = function(c) {
   if (this._world.isLiveChunk(c[0], c[1])) {
     var current = this._world.getCell(c[0], c[1], c[2], c[3], c[4]);
@@ -106,6 +114,7 @@ Player.prototype._build = function(c) {
   this._renderer.setDirty();
 };
 
+/** @private */
 Player.prototype._destroy = function(c) {
   if (this._world.isLiveChunk(c[0], c[1])) {
     var current = this._world.getCell(c[0], c[1], c[2] + 1, c[3], c[4]);

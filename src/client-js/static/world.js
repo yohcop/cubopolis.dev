@@ -1,14 +1,21 @@
-// Holds a representation of the world.
 
+/**
+ * Holds a representation of the world.
+ * @constructor
+ */
 function World(chunkSize) {
   this.chunkSize = chunkSize;
   this.depth = chunkSize + 1;
   this.content = [];
 
+  /** @private */
   this._playersByChunk = [];
+  /** @private */
   this._playersById = {};
 
+  /** @private */
   this._liveChunks = [];
+  /** @private */
   this._pendingChunks = [];
 }
 

@@ -1,18 +1,32 @@
-
-// ===================================================
-// Web sockets network implementation
-// ===================================================
+/**
+ * A network protocol implementation using Web sockets.
+ * @constructor
+ * @implements {ServerComm}
+ */
 function Websockets() {
+  /** @private */
   this._wsAddress = "";
+  /** @private */
   this._apiURL = "";
 
+  /** @private */
   this._listener = null;
+  /** @private */
   this._isReady = false;
 
-  // The current chunks being monitored for updates.
+  /**
+   * The current chunks being monitored for updates.
+   * @private
+   */
   this._listen = null;
 }
 
+/**
+ * Sets up the websocket client.
+ * @param {NetListener} listener
+ * @param {string} wsAddress Address of the websocket. e.g. ws://cube.leppoc.net
+ * @param {string} apiURL Address for the Ajax API. e.g. http://cube.leppoc.net
+ */
 Websockets.prototype.setup = function(listener, wsAddress, apiURL) {
   this._wsAddress = wsAddress;
   this._apiURL = apiURL;
@@ -20,6 +34,7 @@ Websockets.prototype.setup = function(listener, wsAddress, apiURL) {
   this._connect(2000);
 }
 
+/** @private */
 Websockets.prototype._connect = function(nextTimeout) {
   var t = this;
   if (window["WebSocket"]) {
@@ -48,6 +63,16 @@ Websockets.prototype._connect = function(nextTimeout) {
   }
 };
 
+/**
+ * Start listening for the given list of chunks.
+ *
+ * The message sent through the websocket is of the form:
+ *   l y1 x1 y2 x2 y3 x3 \n
+ *
+ * @param {Array} chunks A list of [y,x] chunk coordinates.
+ *
+ * @override
+ */
 Websockets.prototype.listenChunks = function(chunks) {
   var message = ["l"];
   for (var i in chunks) {
@@ -68,6 +93,13 @@ Websockets.prototype.listenChunks = function(chunks) {
   });
 }
 
+/**
+ * Set the given cell.
+ * The message sent through the websocket is of the form:
+ *   w chunkY chunkX cellZ cellY cellX value \n
+ *
+ * @override
+ */
 Websockets.prototype.setCell = function(chunkY, chunkX, cellZ, cellY, cellX, value) {
   var message = ["w", chunkY, chunkX, cellZ, cellY, cellX, value, "\n"].join(" ");
   var t = this;
@@ -76,6 +108,15 @@ Websockets.prototype.setCell = function(chunkY, chunkX, cellZ, cellY, cellX, val
   });
 };
 
+/**
+ * Send the given text message.
+ * The text should not contain any \n character.
+ *
+ * The message sent through the websocket is of the form:
+ *   t text \n
+ *
+ * @override
+ */
 Websockets.prototype.sendText = function(text) {
   var message = ["t", text, "\n"].join(" ");
   var t = this;
@@ -84,6 +125,14 @@ Websockets.prototype.sendText = function(text) {
   });
 };
 
+/**
+ * Tell the server the player is now on the given cell
+ *.
+ * The message sent through the websocket is of the form:
+ *   m chunkY chunkX cellZ cellY cellX \n
+ *
+ * @override
+ */
 Websockets.prototype.movePlayer = function(chunkY, chunkX, cellZ, cellY, cellX) {
   var message = ["m", chunkY, chunkX, cellZ, cellY, cellX, "\n"].join(" ");
   var t = this;
@@ -92,6 +141,7 @@ Websockets.prototype.movePlayer = function(chunkY, chunkX, cellZ, cellY, cellX) 
   });
 };
 
+/** @inheritDoc */
 Websockets.prototype.reloadChunk = function(chunkY, chunkX) {
   console.log("reloading chunk ", chunkY, chunkX);
   var t = this;
@@ -109,6 +159,7 @@ Websockets.prototype.reloadChunk = function(chunkY, chunkX) {
   });
 };
 
+/** @private */
 Websockets.prototype._receiveMessage = function(data) {
   var parts = data.split(" ");
   if(parts[0] == "m" && parts.length == 7) {
@@ -138,6 +189,7 @@ Websockets.prototype._receiveMessage = function(data) {
   }
 };
 
+/** @private */
 Websockets.prototype._waitForReady = function(ready_function) {
   var t = this;
   var waitForReady = function() {

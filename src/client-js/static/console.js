@@ -1,20 +1,30 @@
 
+/**
+ * @constructor
+ */
 function Console() {
   this.maxMessages = 10;
   this.messages=[];
 
-  this._commandHead = ">>> ";
   // The current command being typed by the user
   this.command = this._commandHead;
-  this._listener = null;
-
-  this._history = [];
-  this._historyPosition = -1;
 
   this.visible = true;
   this.grabsKeyboard = false;
 
+  /** @private */
+  this._commandHead = ">>> ";
+  /** @private */
+  this._listener = null;
+
+  /** @private */
+  this._history = [];
+  /** @private */
+  this._historyPosition = -1;
+
+  /** @private */
   this._flags = null;
+  /** @private */
   this._comm = null;
 }
 
@@ -95,6 +105,7 @@ Console.prototype.receiveMessage = function(message) {
   this._listener.consoleIsDirty();
 };
 
+/** @private */
 Console.prototype._execute = function(command) {
   var parts = command.split(" ");
   if (parts[0][0] != ":") {
@@ -149,6 +160,7 @@ Console.prototype._execute = function(command) {
   }
 };
 
+/** @private */
 Console.prototype._checkOldMessages = function() {
   if (this.messages.length == 0) return;
   var now = new Date().getTime();
@@ -158,6 +170,12 @@ Console.prototype._checkOldMessages = function() {
   }
 };
 
+/**
+ * Setup the console.
+ * @param {Flags} flags an implementation of the Flags interface.
+ * @param {ConsoleListener} listener an implementation of ConsoleListener interface.
+ * @param {ServerComm} comm an implementation of the ServerComm interface.
+ */
 Console.prototype.setup = function(flags, listener, comm) {
   this._flags = flags;
   this._listener = listener;

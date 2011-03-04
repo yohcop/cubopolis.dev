@@ -1,0 +1,15 @@
+
+A Javascript library for cubopolis (http://cube.leppoc.net)
+
+
+DEV
+===
+
+I am using the google javascript compiler - Clojure - to "compile" the
+javascript, and try to ensure some sort of type safety.
+
+See http://code.google.com/closure/compiler/ and
+http://code.google.com/closure/compiler/docs/js-for-compiler.html.
+
+To generate the doc API, use:
+http://jsdoc.sourceforge.net/
