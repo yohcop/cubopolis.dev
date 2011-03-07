@@ -53,7 +53,7 @@ Websockets.prototype._connect = function(nextTimeout) {
         nextTimeout = 30000;
       }
       console.log("Will try to reconnect in " + (nextTimeout / 1000) + "s");
-      setTimeout(function() {t._connect(nextTimeout + 2000, address)}, nextTimeout);
+      setTimeout(function() {t._connect(nextTimeout + 2000)}, nextTimeout);
     };
     this.conn.onmessage = function(evt) {
       t._receiveMessage(evt.data);
