@@ -136,7 +136,6 @@ Console.prototype._execute = function(command) {
     this.receiveMessage("Move around with your mouse or keys to discover what was built");
     this.receiveMessage("by other players.");
     this.receiveMessage("Be nice ! Don't destroy cool stuff too !");
-
   } else if (parts[0] == ":help") {
     if (parts[1] == "set") {
       this.receiveMessage(" Set/unset options.");
@@ -155,8 +154,7 @@ Console.prototype._execute = function(command) {
       this.receiveMessage(" More help: :help <command>");
     }
   } else {
-    this.receiveMessage(">>> " + command);
-    this.receiveMessage("command not found");
+    this._comm.sendText(command);
   }
 };
 
