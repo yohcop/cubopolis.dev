@@ -6,9 +6,6 @@ function Console() {
   this.maxMessages = 10;
   this.messages=[];
 
-  // The current command being typed by the user
-  this.command = this._commandHead;
-
   this.visible = true;
   this.grabsKeyboard = false;
 
@@ -26,6 +23,9 @@ function Console() {
   this._flags = null;
   /** @private */
   this._comm = null;
+
+  // The current command being typed by the user
+  this.command = this._commandHead;
 }
 
 Console.prototype.toggle = function() {
