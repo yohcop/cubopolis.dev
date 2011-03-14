@@ -188,29 +188,14 @@ Renderer.prototype.refreshChunk = function(chunkY, chunkX) {};
 /**
  * @constructor
  */
-function Flags() {};
+function Console() {};
 
 /**
- * Return a number of seconds for which a message should be on the console.
- * @return {number} in seconds.
+ * The given message was received from the server and should be shown to the
+ * user. Right now, the API does not offer a way to determine the origin of the
+ * message (a user, who, or the system, etc).
+ * TODO:
+ * @param {string} message
  */
-Flags.prototype.messageTimeoutInSec = function() {};
+Console.prototype.receiveMessage = function(message) {};
 
-/**
- * Sets the given flag to the given value.
- * @param {string} key flag name.
- * @param {string} value new flag value.
- */
-Flags.prototype.set = function(key, value) {};
-
-// ============================================================================
-
-/**
- * @constructor
- */
-function ConsoleListener() {};
-
-/**
- * Says that the console should be repainted.
- */
-ConsoleListener.prototype.consoleIsDirty = function() {};

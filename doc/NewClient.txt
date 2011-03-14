@@ -45,62 +45,15 @@ It should be easy to re-use the JS that is already implemented, talks to the
 server, takes care of caching the world pieces, send updates to the renderer,
 etc.
 
-2 things need to be implemented to use the basic js already written:
+i2 thing need to be implemented to use the basic js already written:
   - a renderer class.
-  - a flag class.
+  - a console class.
 
-
-Renderer
---------
-The renderer should not store any world state, as it should have access
-to a World object that contains this information, and a Player object as well.
-It should only worry about rendering of the world, players and console
-information.
-
-The renderer must have the following methods:
-- setDirty()
-  Says that something has changed in the world, and it should be repainted. If the renderer continuously updates the world it can be ignored.
-- reloadVisibleParts()
-  The renderer should figure out what are the chunks around the player, and call
-    this.comm.reloadChunk(chunkY, chunkX)
-  for each of them. At the end, the renderer must also update the list of
-  chunks Live with :
-    this.comm.listenChunks(toListen);
-  The renderer should also use this.world.pendingChunk(chunkY, chunkX) which
-  returns true if the world is waiting for this chunk and
-  this.world.isLiveChunk(chunkY, chunkX) to avoid requesting something we
-  already know.
-- refreshCell(chunkY, chunkX, z, y, x)
-  Says that the given cell was updated and should be repainted.
-- refreshChunk(chunkY, chunkX)
-  Says that the given chunk was updated and should be repainted.
-- consoleIsDirty()
-  Similar to setDirty(), but says that the console content was updated and
-  should be repainted.
-
-
-Flags
------
-
-Flags is not actually needed really, but it is super useful, so you probably
-want one. Plus the console already provides some facilities to let the player
-change some properties of the game (for example, draw shadows or not, for
-slower computers, etc.) Ultimately this will be saved on the server for each
-player.
-
-The Flags class must satisfy the following interface:
-- messageTimeoutInSec()
-  For how long the console should show messages from the system, or chat
-  messages from other users, etc.
-- set(key, value)
-  Set the configuration value for the given key.
-
+These 2 classes are described in the interfaces.js file.
 
 That's it.
 
 The implementation usually can call functions and use members that don't start with "_".
-- console.type(event)
-  When a key is hit.
 - player.selectAction(a)
   a is in [0,9] 0 being "destroy" action, [1-9] are cube building actions.
 - player.moveZ()
@@ -165,7 +118,6 @@ function main() {
 
   // Specific renderer implementation
   var renderer = new Renderer();
-  var flags = new Flags();
 
   // Setup phase. Give everyone what they need.
   // Generic stuff
@@ -173,10 +125,8 @@ function main() {
   commListener.setup(world, renderer, console);
   // Only the dev server, at cube.leppoc.net:10234 accepts external connections.
   comm.setup(commListener, "ws://cube.leppoc.net:10234", "http://cube.leppoc.net:10234");
-  console.setup(flags, renderer, comm);
 
   // Renderer implementation stuff
-  flags.setup(renderer);
-  renderer.setup(chunkSize, world, comm, flags, console, player, ui);
+  renderer.setup(chunkSize, world, comm, console, player, ui);
   setInterval(function() {renderer.repaint();}, 40);
 };
