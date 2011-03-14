@@ -60,36 +60,44 @@ World.prototype.getChunk = function(chunkY, chunkX) {
   return this.content[chunkY][chunkX];
 };
 
+/**
+ * Give a chunk (obtained with getChunk), and a cell within that chunk, returns the
+ * cell value (as a string).
+ * @param {Array} chunk Chunk obtained via World.getChunk.
+ * @param {number} cellZ Z coordinate of the cell in chunk.
+ * @param {number} cellY Y coordinate of the cell in chunk.
+ * @param {number} cellX X coordinate of the cell in chunk.
+ * @return {string} cell value
+ */
 World.prototype.getCellFromChunk = function(chunk, cellZ, cellY, cellX) {
   if (!chunk) {
     return undefined;
   }
 
-  if (chunk[cellY] && chunk[cellY][cellX] && chunk[cellY][cellX][cellZ] != undefined) {
+  if (chunk[cellY] && chunk[cellY][cellX]) {
     var v = chunk[cellY][cellX][cellZ];
-    if (v == "0") {
-      return "";
+    if (v != undefined && v != "") {
+      return v;
     }
-    return v;
   }
-  return "";
+  return cellZ == 0 ? "0" : "";
 };
 
+/**
+ * Similar to getCellFromChunk, only retrieves the chunk first.
+ * This function exists to make it easy to retrieve a cell within a chunk, but
+ * when possible (for example in drawing loops), it is more efficient to cache
+ * the currently painted chunk from getChunk, and use getCellFromChunk for each
+ * cell in the chunk.
+ * @param {number} chunkY Y coordinate of the chunk.
+ * @param {number} chunkX X coordinate of the chunk.
+ * @param {number} cellZ Z coordinate of the cell in chunk.
+ * @param {number} cellY Y coordinate of the cell in chunk.
+ * @param {number} cellX X coordinate of the cell in chunk.
+ * @return {string} cell value
+ */
 World.prototype.getCell = function(chunkY, chunkX, cellZ, cellY, cellX) {
-  if (!this.content[chunkY] || !this.content[chunkY][chunkX]) {
-    return undefined;
-  }
-
-  var c = this.content[chunkY][chunkX];
-  if (c[cellY] && c[cellY][cellX] && c[cellY][cellX][cellZ] != undefined) {
-    var v = c[cellY][cellX][cellZ];
-    if (v == "0") {
-      this.content[chunkY][chunkX][cellY][cellX][cellZ] = "";
-      v = "";
-    }
-    return v;
-  }
-  return "";
+  return this.getCellFromChunk(this.getChunk(chunkY, chunkX), cellZ, cellY, cellX);
 };
 
 World.prototype.maxHeight = function(chunkY, chunkX, cellY, cellX) {
