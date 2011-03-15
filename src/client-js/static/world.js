@@ -112,7 +112,7 @@ World.prototype.maxHeight = function(chunkY, chunkX, cellY, cellX) {
 }
 
 World.prototype.isEmpty = function(value) {
-  return !value || value == "";
+  return !value || value == "" || value == "0";
 };
 
 World.prototype.floor = function(chunkY, chunkX, cellZ, cellY, cellX) {
