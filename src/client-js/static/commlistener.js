@@ -16,6 +16,8 @@ function CommListener() {
   this._renderer = null;
   /** @private */
   this._console = null;
+  /** @private */
+  this._player = null;
 }
 
 /**
@@ -23,11 +25,13 @@ function CommListener() {
  * @param {World} world a World instance.
  * @param {Renderer} renderer a Renderer instance.
  * @param {Console} console a Console instance.
+ * @param {Player} player the local Player instance.
  */
-CommListener.prototype.setup = function(world, renderer, console) {
+CommListener.prototype.setup = function(world, renderer, console, player) {
   this._world = world;
   this._renderer = renderer;
   this._console = console;
+  this._player = player
 };
 
 /** @inheritDoc */
@@ -64,8 +68,15 @@ CommListener.prototype.listeningTo = function(chunks) {
 
 /** @inheritDoc */
 CommListener.prototype.playerMoved = function(chunkY, chunkX, z, y, x, playerId) {
-  this._world.playerMoved(chunkY, chunkX, z, y, x, playerId);
-  this._renderer.refreshCell(chunkY, chunkX, z, y, x);
+  if (playerId == "0") {
+    // The local player is moved to the given location.
+    this._player.setPosition(chunkY, chunkX, z, y, x);
+    this._renderer.centerOnPlayer();
+  } else {
+    // Another player is moved.
+    this._world.playerMoved(chunkY, chunkX, z, y, x, playerId);
+    this._renderer.refreshCell(chunkY, chunkX, z, y, x);
+  }
 };
 
 /** @inheritDoc */

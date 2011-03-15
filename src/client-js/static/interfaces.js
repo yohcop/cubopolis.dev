@@ -117,6 +117,9 @@ NetListener.prototype.receiveMessage = function(message) {};
 
 /**
  * The player with the given playerId moved to the given cell.
+ * If playerId is "0", then the local player must be moved. This is used to reload the
+ * position if it was saved on the server for logged in users for example.
+ *
  * @param {number} chunkY chunk Y coordinate.
  * @param {number} chunkX chunk X coordinate.
  * @param {number} cellZ cell Z coordinate.
@@ -182,6 +185,15 @@ Renderer.prototype.refreshCell = function(chunkY, chunkX, z, y, x) {};
  * @param {number} chunkX chunk X coordinate.
  */
 Renderer.prototype.refreshChunk = function(chunkY, chunkX) {};
+
+/**
+ * Tells the renderer that the local player's position has changed. The renderer
+ * should read the new position from a Player object, and recenter the view on
+ * the player.
+ * This usually happens when a logged in player, with a previously saved position
+ * starts the game.
+ */
+Renderer.prototype.centerOnPlayer = function() {};
 
 // ============================================================================
 

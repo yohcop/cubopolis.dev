@@ -32,6 +32,11 @@ Player.prototype.isOn = function(chunkY, chunkX, z, y, x) {
     x == this.position[4];
 };
 
+Player.prototype.setPosition = function(chunkY, chunkX, z, y, x) {
+  this.position = [chunkY, chunkX, z, y, x];
+  this.moveZ();
+};
+
 Player.prototype.moveTo = function(chunkY, chunkX, y, x) {
   var posNow = this.position;
   var newPos = [chunkY, chunkX, 0, y, x];

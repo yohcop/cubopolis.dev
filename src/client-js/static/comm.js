@@ -19,6 +19,8 @@ function Websockets() {
    * @private
    */
   this._listen = null;
+  this._nextListen = null;
+  this._nextChunks = null;
 }
 
 /**
@@ -59,7 +61,7 @@ Websockets.prototype._connect = function(nextTimeout) {
       t._receiveMessage(evt.data);
     };
   } else {
-    //alert("No websockets in your browser. Try Chrome");
+    alert("Sorry, no websockets in your browser. Try with Google Chrome");
   }
 };
 
@@ -84,9 +86,25 @@ Websockets.prototype.listenChunks = function(chunks) {
   if (listen == this._listen) {
     return;
   }
+  // We do all this stuff so that we avoid race conditions.
+  // The waitForReady will likely not execute in order. So we do the work
+  // inside the waitForReady callback, to make sure we are requesting the most
+  // up to date chunks.
+  // Note: no, it doesn't completely avoids race conditions I guess, but it's
+  // good enough for now.
+  this._nextListen = listen;
+  this._nextChunks = chunks;
 
   var t = this;
   this._waitForReady(function() {
+    var listen = t._nextListen;
+    var chunks = t._nextChunks;
+    if (!listen || !chunks) {
+      return;
+    }
+    t._nextChunks = null;
+    t._nextListen = null;
+
     t.conn.send(listen);
     t._listen = listen;
     t._listener.listeningTo(chunks);
@@ -143,7 +161,6 @@ Websockets.prototype.movePlayer = function(chunkY, chunkX, cellZ, cellY, cellX) 
 
 /** @inheritDoc */
 Websockets.prototype.reloadChunk = function(chunkY, chunkX) {
-  console.log("reloading chunk ", chunkY, chunkX);
   var t = this;
   $.ajax({
     url: this._apiURL + '/a/r',
