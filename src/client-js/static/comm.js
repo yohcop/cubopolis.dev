@@ -161,20 +161,13 @@ Websockets.prototype.movePlayer = function(chunkY, chunkX, cellZ, cellY, cellX) 
 
 /** @inheritDoc */
 Websockets.prototype.reloadChunk = function(chunkY, chunkX) {
+  var message = ["r", chunkY, chunkX, "\n"].join(" ");
   var t = this;
-  $.ajax({
-    url: this._apiURL + '/a/r',
-    data: {
-      'cy': chunkY,
-      'cx': chunkX
-    },
-    jsonp: 'cb',
-    dataType: 'jsonp',
-    success: function(data) {
-      t._listener.setChunk(chunkY, chunkX, data);
-    }
+  this._waitForReady(function() {
+    t.conn.send(message);
   });
 };
+
 
 /** @private */
 Websockets.prototype._receiveMessage = function(data) {
@@ -201,6 +194,39 @@ Websockets.prototype._receiveMessage = function(data) {
   } else if(parts[0] == "x" && parts.length == 2) {
     var playerId = parseInt(parts[1]);
     this._listener.playerLeaving(playerId);
+  } else if(parts[0] == "r" && parts.length == 4) {
+    var chunkX = parseInt(parts[1]);
+    var chunkY = parseInt(parts[2]);
+    var data = parts[3];
+    var ar = [];
+    var buffer = "";
+    var x = 0, y = 0, z = 0;
+    console.log("Chunk", chunkX, chunkY);
+    console.log(parts[3]);
+    for (var i = 0; i < data.length; i++) {
+      var c = data[i];
+      if (c == "\n" || c == " ") {
+        break;
+      } else if (c == "#") {
+        setInArray(ar, x, y, z, buffer);
+        x++;
+        y = 0;
+        z = 0;
+        buffer = "";
+      } else if (c == "|") {
+        setInArray(ar, x, y, z, buffer);
+        y++;
+        z = 0;
+        buffer = "";
+      } else if (c == ",") {
+        setInArray(ar, x, y, z, buffer);
+        z++;
+        buffer = "";
+      } else {
+        buffer += c;
+      }
+    }
+    this._listener.setChunk(chunkY, chunkX, ar);
   } else {
     console.log("unrecognized", parts);
   }
