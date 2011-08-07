@@ -81,8 +81,7 @@ Websockets.prototype.listenChunks = function(chunks) {
     message[message.length] = chunks[i][0];
     message[message.length] = chunks[i][1];
   }
-  message[message.length] = "\n";
-  var listen = message.join(" ");
+  var listen = message.join(" ") + "\n";
   if (listen == this._listen) {
     return;
   }
@@ -119,7 +118,7 @@ Websockets.prototype.listenChunks = function(chunks) {
  * @override
  */
 Websockets.prototype.setCell = function(chunkY, chunkX, cellZ, cellY, cellX, value) {
-  var message = ["w", chunkY, chunkX, cellZ, cellY, cellX, value, "\n"].join(" ");
+  var message = ["w", chunkY, chunkX, cellZ, cellY, cellX, value].join(" ") + "\n";
   var t = this;
   this._waitForReady(function() {
     t.conn.send(message);
@@ -136,7 +135,7 @@ Websockets.prototype.setCell = function(chunkY, chunkX, cellZ, cellY, cellX, val
  * @override
  */
 Websockets.prototype.sendText = function(text) {
-  var message = ["t", text, "\n"].join(" ");
+  var message = ["t", text].join(" ") + "\n";
   var t = this;
   this._waitForReady(function() {
     t.conn.send(message);
@@ -152,7 +151,7 @@ Websockets.prototype.sendText = function(text) {
  * @override
  */
 Websockets.prototype.movePlayer = function(chunkY, chunkX, cellZ, cellY, cellX) {
-  var message = ["m", chunkY, chunkX, cellZ, cellY, cellX, "\n"].join(" ");
+  var message = ["m", chunkY, chunkX, cellZ, cellY, cellX].join(" ") + "\n";
   var t = this;
   this._waitForReady(function() {
     t.conn.send(message);
@@ -161,7 +160,7 @@ Websockets.prototype.movePlayer = function(chunkY, chunkX, cellZ, cellY, cellX) 
 
 /** @inheritDoc */
 Websockets.prototype.reloadChunk = function(chunkY, chunkX) {
-  var message = ["r", chunkY, chunkX, "\n"].join(" ");
+  var message = ["r", chunkY, chunkX].join(" ") + "\n";
   var t = this;
   this._waitForReady(function() {
     t.conn.send(message);
@@ -201,8 +200,6 @@ Websockets.prototype._receiveMessage = function(data) {
     var ar = [];
     var buffer = "";
     var x = 0, y = 0, z = 0;
-    console.log("Chunk", chunkX, chunkY);
-    console.log(parts[3]);
     for (var i = 0; i < data.length; i++) {
       var c = data[i];
       if (c == "\n" || c == " ") {
