@@ -194,8 +194,8 @@ Websockets.prototype._receiveMessage = function(data) {
     var playerId = parseInt(parts[1]);
     this._listener.playerLeaving(playerId);
   } else if(parts[0] == "r" && parts.length == 4) {
-    var chunkX = parseInt(parts[1]);
-    var chunkY = parseInt(parts[2]);
+    var chunkY = parseInt(parts[1]);
+    var chunkX = parseInt(parts[2]);
     var data = parts[3];
     var ar = [];
     var buffer = "";

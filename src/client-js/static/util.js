@@ -4,12 +4,12 @@ function squaredDistance(x1, y1, x2, y2) {
 }
 
 function setInArray(ar, x, y, z, val) {
-  if (ar.length <= x) {
-    ar[x] = [];
+  if (ar.length <= y) {
+    ar[y] = [];
   }
-  if (ar[x].length <= y) {
-    ar[x][y] = [];
+  if (ar[y].length <= x) {
+    ar[y][x] = [];
   }
-  ar[x][y][z] = val;
+  ar[y][x][z] = val;
 }
 
