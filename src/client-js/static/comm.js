@@ -224,6 +224,10 @@ Websockets.prototype._receiveMessage = function(data) {
         buffer += c;
       }
     }
+    // Last character is left in the buffer.
+    if (buffer != "") {
+      setInArray(ar, x, y, z, buffer);
+    }
     this._listener.setChunk(chunkY, chunkX, ar);
   } else {
     console.log("unrecognized", parts);
