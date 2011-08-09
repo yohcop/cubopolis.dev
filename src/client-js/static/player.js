@@ -124,9 +124,9 @@ Player.prototype._destroy = function(c) {
   if (this._world.isLiveChunk(c[0], c[1])) {
     var current = this._world.getCell(c[0], c[1], c[2] + 1, c[3], c[4]);
     if (!this._world.isEmpty(current)) {
-      this._comm.setCell(c[0], c[1], c[2] + 1, c[3], c[4], "");
+      this._comm.setCell(c[0], c[1], c[2] + 1, c[3], c[4], "0");
     } else {
-      this._comm.setCell(c[0], c[1], c[2], c[3], c[4], "");
+      this._comm.setCell(c[0], c[1], c[2], c[3], c[4], "0");
     }
   }
   this._renderer.setDirty();

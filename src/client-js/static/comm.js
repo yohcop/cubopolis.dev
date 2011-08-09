@@ -170,6 +170,7 @@ Websockets.prototype.reloadChunk = function(chunkY, chunkX) {
 
 /** @private */
 Websockets.prototype._receiveMessage = function(data) {
+  data = data.replace(/^\s+|\s+$/g, '');
   var parts = data.split(" ");
   if(parts[0] == "m" && parts.length == 7) {
     var chunkY = parseInt(parts[1]);
