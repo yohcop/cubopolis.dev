@@ -162,20 +162,14 @@ World.prototype.hasOrPendingChunk = function(chunkY, chunkX) {
         && this._pendingChunks[chunkY][chunkX]);
 };
 
-World.prototype.setLiveChunks = function(chunks) {
-  var liveChunks = [];
-  for (var i = 0; i < chunks.length; i++) {
-    if (!liveChunks[chunks[i][0]]) {
-      liveChunks[chunks[i][0]] = [];
-    }
-    liveChunks[chunks[i][0]][chunks[i][1]] = 1;
-  }
-  this._liveChunks = liveChunks;
+World.prototype.setLiveChunks = function(chunkY, chunkX, radius) {
+  this._liveChunks = [chunkY, chunkX, radius];
 };
 
 World.prototype.isLiveChunk = function(chunkY, chunkX) {
-  return this._liveChunks[chunkY]
-    && this._liveChunks[chunkY][chunkX];
+  var r = this._liveChunks[2];
+  return Math.abs(chunkY - this._liveChunks[0]) <= r &&
+    Math.abs(chunkX - this._liveChunks[1]) <= r;
 };
 
 World.prototype.pendingChunk = function(chunkY, chunkX) {

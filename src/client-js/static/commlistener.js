@@ -62,8 +62,8 @@ CommListener.prototype.setChunk = function(chunkY, chunkX, data) {
 };
 
 /** @inheritDoc */
-CommListener.prototype.listeningTo = function(chunks) {
-  this._world.setLiveChunks(chunks);
+CommListener.prototype.listeningTo = function(chunkY, chunkX, radius) {
+  this._world.setLiveChunks(chunkY, chunkX, radius);
 };
 
 /** @inheritDoc */

@@ -27,10 +27,11 @@ ServerComm.prototype.reloadChunk = function(chunkY, chunkX) {};
  * given chunks. Calling listenChunks with a new list of chunks to listen
  * overrides all previous calls to this function. The server will only send
  * updates for the chunks passed during the last call to listenChunks.
- * @param chunks A list of [y, x] chunk coordinates.
- *        e.g. [[0,0], [1,0]] will listen for the chunk 0,0 and 1,0
+ * @param {number} chunkY chunk Y coordinate.
+ * @param {number} chunkX chunk X coordinate.
+ * @param {number} radius how many chunk aournd chunkX/Y we want to listen.
  */
-ServerComm.prototype.listenChunks = function(chunks) {};
+ServerComm.prototype.listenChunks = function(chunkY, chunkX, radius) {};
 
 /**
  * Save the value for a given cell on the server.

@@ -20,7 +20,6 @@ function Websockets() {
    */
   this._listen = null;
   this._nextListen = null;
-  this._nextChunks = null;
 }
 
 /**
@@ -69,18 +68,12 @@ Websockets.prototype._connect = function(nextTimeout) {
  * Start listening for the given list of chunks.
  *
  * The message sent through the websocket is of the form:
- *   l y1 x1 y2 x2 y3 x3 \n
- *
- * @param {Array} chunks A list of [y,x] chunk coordinates.
+ *   l centerY centerX radius \n
  *
  * @override
  */
-Websockets.prototype.listenChunks = function(chunks) {
-  var message = ["l"];
-  for (var i in chunks) {
-    message[message.length] = chunks[i][0];
-    message[message.length] = chunks[i][1];
-  }
+Websockets.prototype.listenChunks = function(centerY, centerX, radius) {
+  var message = ["l", centerY, centerX, radius];
   var listen = message.join(" ") + "\n";
   if (listen == this._listen) {
     return;
@@ -92,21 +85,18 @@ Websockets.prototype.listenChunks = function(chunks) {
   // Note: no, it doesn't completely avoids race conditions I guess, but it's
   // good enough for now.
   this._nextListen = listen;
-  this._nextChunks = chunks;
 
   var t = this;
   this._waitForReady(function() {
     var listen = t._nextListen;
-    var chunks = t._nextChunks;
-    if (!listen || !chunks) {
+    if (!listen) {
       return;
     }
-    t._nextChunks = null;
     t._nextListen = null;
 
     t.conn.send(listen);
     t._listen = listen;
-    t._listener.listeningTo(chunks);
+    t._listener.listeningTo(centerY, centerX, radius);
   });
 }
 
