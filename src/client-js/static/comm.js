@@ -178,7 +178,7 @@ Websockets.prototype._receiveMessage = function(data) {
     var cellZ = parseInt(parts[3]);
     var cellY = parseInt(parts[4]);
     var cellX = parseInt(parts[5]);
-    var playerId = parseInt(parts[6]);
+    var playerId = parts[6];
     this._listener.playerMoved(chunkY, chunkX, cellZ, cellY, cellX, playerId);
   } else if(parts[0] == "w" && parts.length == 7) {
     var chunkY = parseInt(parts[1]);
